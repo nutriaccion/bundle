@@ -5,23 +5,23 @@ import numpy
 import pandas as pd
 import pygrowup
 
+WEIGHT_CONST = "Peso" ##TODO(tian): make tipo not locale dependent.
+HEIGHT_CONST = "Talla"
+
 class AnthroLoader():
 
-    WEIGHT_CONST = "Peso" ##TODO(tian): make tipo not locale dependent.
-    HEIGHT_CONST = "Talla"
-
     '''Creates AnthroCalc on DataFrame with personal info'''
-    def __init__(base_df, offset=5):
+    def __init__(self, base_df, offset=5):
         self.df_data = base_df
         self.calculator = pygrowup.Calculator(adjust_height_data=False, adjust_weight_scores=True,
                                include_cdc=False, logger_name='pygrowup',
                                log_level='INFO')
         self.OFFSET_DATOS_P = offset
 
-    def load_segments():
+    def load_segments(self):
         self.personal_data = (self.df_data.iloc[:,:self.OFFSET_DATOS_P:])
-        self.weight = (self.df_data.iloc[:,self.OFFSET_DATOS_P::4])
-        self.size = (self.df_data.iloc[:,(self.OFFSET_DATOS_P + 1)::4])
+        self.weights = (self.df_data.iloc[:,self.OFFSET_DATOS_P::4])
+        self.heights = (self.df_data.iloc[:,(self.OFFSET_DATOS_P + 1)::4])
         self.dates = (self.df_data.iloc[:,(self.OFFSET_DATOS_P + 2)::4])
         self.laydown = (self.df_data.iloc[:,(self.OFFSET_DATOS_P - 1)::4]).iloc[:,1::]
 
@@ -39,19 +39,19 @@ class AnthroLoader():
         for i, c in enumerate(self.jornadas_peso):
             print(f"Jornadas detectadas: {c}") ## TODO: maek logging
 
-    def calculate_indexes():
+    def calculate_indexes(self):
 
         valores = pd.DataFrame(index=self.personal_data.index)
         listado_wfaz = []
         listado_hfaz = []
-        for j, c in enumerate(jornadas_peso):
+        for j, c in enumerate(self.jornadas_peso):
             jornal = c
             wfas = []
             hfas = []
             for i, nin in self.personal_data.iterrows():
                 try:
                     dnac = nin["FechaNacimiento"]
-                    dmet = fechas.loc[i][j]
+                    dmet = self.dates.loc[i][j]
 
                     logging.debug(f"{dmet} - {dnac} = Days (?)")
 
@@ -61,8 +61,8 @@ class AnthroLoader():
                         hfa_val = numpy.NaN
                     else:
                         days = (dmet - dnac).days/ 30.4375
-                        wfa_val = float(calculator.wfa(pesos.loc[i][j], days, nin["Sexo"], height=talla.loc[i][0]))
-                        hfa_val = float(calculator.lhfa(talla.loc[i][j], days, nin["Sexo"]))
+                        wfa_val = float(self.calculator.wfa(self.weights.loc[i][j], days, nin["Sexo"], height=self.heights.loc[i][0]))
+                        hfa_val = float(self.calculator.lhfa(self.heights.loc[i][j], days, nin["Sexo"]))
                 except Exception as e:
                     logging.warn("invalid date", e)
                     wfa_val = numpy.NaN
@@ -76,8 +76,8 @@ class AnthroLoader():
             listado_wfaz.append(wfaz_s)
             listado_hfaz.append(hfaz_s)
 
-        self.wfaz = pd.DataFrame(dict(zip(jornadas_peso, listado_wfaz)))
-        self.hfaz = pd.DataFrame(dict(zip(jornadas_peso, listado_hfaz)))
+        self.wfaz = pd.DataFrame(dict(zip(self.jornadas_peso, listado_wfaz)))
+        self.hfaz = pd.DataFrame(dict(zip(self.jornadas_peso, listado_hfaz)))
 
     def melty():
         def sweet_toast_melt(melty_df,vname="z-val"):
