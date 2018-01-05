@@ -1,3 +1,4 @@
+import os
 import logging
 
 import numpy
@@ -5,7 +6,7 @@ import pandas as pd
 import pygrowup
 
 
-tabla_nimacabaj = pd.read_excel("ej_nim.xls", )
+tabla_nimacabaj = pd.read_excel(os.path.join(os.path.dirname(__file__), "ej_nim.xls"))
 
 calculator = pygrowup.Calculator(adjust_height_data=False, adjust_weight_scores=True,
                        include_cdc=False, logger_name='pygrowup',
