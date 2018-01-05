@@ -19,7 +19,10 @@ class AnthroLoader():
         self.OFFSET_DATOS_P = offset
 
     def load_segments(self):
-        self.personal_data = (self.df_data.iloc[:,:self.OFFSET_DATOS_P:])
+        ## assume data is in
+        ## PERSONAL DATA, weight_1, height_1, date_1, laydown_1
+        # format
+         self.personal_data = (self.df_data.iloc[:,:self.OFFSET_DATOS_P:])
         self.weights = (self.df_data.iloc[:,self.OFFSET_DATOS_P::4])
         self.heights = (self.df_data.iloc[:,(self.OFFSET_DATOS_P + 1)::4])
         self.dates = (self.df_data.iloc[:,(self.OFFSET_DATOS_P + 2)::4])
