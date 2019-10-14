@@ -1,2 +1,3 @@
 pandas
 django
+-e git+git://github.com/tian2992/pygrowup

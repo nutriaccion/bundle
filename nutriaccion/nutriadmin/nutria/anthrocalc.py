@@ -8,6 +8,7 @@ import pygrowup
 WEIGHT_CONST = "Peso" ##TODO(tian): make tipo not locale dependent.
 HEIGHT_CONST = "Talla"
 
+
 class AnthroLoader():
 
     '''Creates AnthroCalc on DataFrame with personal info'''
@@ -22,7 +23,7 @@ class AnthroLoader():
         ## assume data is in
         ## PERSONAL DATA, weight_1, height_1, date_1, laydown_1
         # format
-         self.personal_data = (self.df_data.iloc[:,:self.OFFSET_DATOS_P:])
+        self.personal_data = (self.df_data.iloc[:,:self.OFFSET_DATOS_P:])
         self.weights = (self.df_data.iloc[:,self.OFFSET_DATOS_P::4])
         self.heights = (self.df_data.iloc[:,(self.OFFSET_DATOS_P + 1)::4])
         self.dates = (self.df_data.iloc[:,(self.OFFSET_DATOS_P + 2)::4])
